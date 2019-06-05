@@ -6,12 +6,14 @@ import java.util.*;
 import com.boram.manager.vo.Order;
 import com.boram.manager.vo.OrderDao;
 import com.boram.manager.vo.Product;
+import com.boram.manager.vo.ProductDao;
 import com.boram.member.controller.MemberController;
 
 public class MyCart {
 	static ArrayList<Product> CList = new ArrayList<>();// 장바구니리스트
 	ArrayList<Order> OList = new ArrayList<>();// 주문리스트
-
+	ProductDao pDao = new ProductDao();
+List<Product> pArr = pDao.fileRead();
 	// 로그인하면서 누가 로그인했는지 회원정보 가져옴.
 	MemberController mc = new MemberController();
 //	{
@@ -162,6 +164,24 @@ public class MyCart {
 			e.printStackTrace();
 		}
 
+	}
+	public int reduceStock(int oNo, int amount) {
+		int result=0;
+		for (int i = 0; i < pArr.size(); i++) {
+			if(oNo==pArr.get(i).getpNo()) {
+				
+				int stock =pArr.get(i).getStock();
+				pArr.get(i).setStock(stock-amount);
+				if(pArr.get(i).getStock()<0) {
+					pArr.get(i).setStock(stock);
+					result= -1;
+				}else {
+					pDao.fileSave(pArr);
+					result=  0;
+				}
+			}
+		}
+		return result;
 	}
 
 }

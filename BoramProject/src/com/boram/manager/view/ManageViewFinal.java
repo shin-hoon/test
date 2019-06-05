@@ -80,12 +80,17 @@ public class ManageViewFinal {
 	private JFreeChart chart;
 
 	public JPanel manageMain() {
+		pArr.clear();
+		pArr =pDao.fileRead();
+		oArr.clear();
+		oArr= oDao.fileRead();
+		mArr.clear();
+		mArr= mDao.fileRead();
 		JPanel manageMain = new JPanel();
 		manageMain.setBounds(100, 100, 745, 691);
 		manageMain.setLayout(null);
 		manageMain.setBackground(Color.WHITE);
-		
-		
+
 		JLabel label_1 = new JLabel("\uAD00\uB9AC\uC790 \uD398\uC774\uC9C0");
 		label_1.setFont(new Font("굴림", Font.BOLD, 20));
 		label_1.setBounds(249, 34, 153, 67);
@@ -125,7 +130,7 @@ public class ManageViewFinal {
 		salesState.setBackground(Color.BLACK);
 		salesState.setFont(new Font("굴림", Font.PLAIN, 18));
 		manageMain.add(salesState);
-		
+
 		JButton inforDelivery = new JButton("6. \uBC30\uC1A1\uC815\uBCF4");
 		inforDelivery.setBounds(155, 507, 343, 67);
 		inforDelivery.setForeground(Color.WHITE);
@@ -173,6 +178,7 @@ public class ManageViewFinal {
 		inforDelivery.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				
 				MainView.setMainPage(cartView());
 			}
 		});
@@ -181,13 +187,17 @@ public class ManageViewFinal {
 	}
 
 	public JPanel manageProduct() {
-
+		pArr.clear();
+		pArr =pDao.fileRead();
+		oArr.clear();
+		oArr= oDao.fileRead();
+		mArr.clear();
+		mArr= mDao.fileRead();
 		JPanel manageProduct = new JPanel();
 		manageProduct.setBounds(62, 15, 772, 585);
 		manageProduct.setLayout(null);
 		manageProduct.setBackground(Color.WHITE);
-		
-		
+
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(92, 76, 562, 438);
 		manageProduct.add(scrollPane);
@@ -278,7 +288,7 @@ public class ManageViewFinal {
 		delete.setFont(new Font("굴림", Font.PLAIN, 15));
 		manageProduct.add(delete);
 		table.setAutoCreateRowSorter(true);
-		
+
 		manageProduct.setVisible(true);
 
 		lastPage.addMouseListener(new MouseAdapter() {
@@ -362,12 +372,18 @@ public class ManageViewFinal {
 	}
 
 	public JPanel analyzeSale() {
-
+		pArr.clear();
+		pArr =pDao.fileRead();
+		oArr.clear();
+		oArr= oDao.fileRead();
+		mArr.clear();
+		mArr= mDao.fileRead();
+		
 		JPanel analyzeSale = new JPanel();
 		analyzeSale.setBounds(17, 15, 747, 675);
 		analyzeSale.setLayout(null);
 		analyzeSale.setBackground(Color.WHITE);
-		
+
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(138, 143, 452, 438);
 		analyzeSale.add(scrollPane);
@@ -380,7 +396,6 @@ public class ManageViewFinal {
 		lblNewLabel.setFont(new Font("굴림", Font.BOLD, 20));
 		analyzeSale.add(lblNewLabel);
 
-		
 		String[] kind = { "조회수 분석", " 판매율분석" };
 		JComboBox<String> comboBox = new JComboBox<String>(kind);
 		comboBox.setBounds(138, 101, 198, 27);
@@ -394,7 +409,6 @@ public class ManageViewFinal {
 		while (itKey.hasNext()) {
 			int value = itKey.next();
 			double result = copy1.get(value);
-
 			kpNo1.add(value);
 			ksales1.add(result);
 
@@ -403,25 +417,30 @@ public class ManageViewFinal {
 		ArrayList<Double> sales1 = new ArrayList<>();
 
 		for (int i = 0; i < pArr.size(); i++) {
-			pNo1.add(pArr.get(i).getpNo());
-			sales1.add(0.0);
+			pNo1.add(pArr.get(i).getpNo()); // 전체번호값 넣기
+			sales1.add(0.0);// sales에 기본값 0.0 넣기
 			for (int j = 0; j < kpNo1.size(); j++) {
-				if (pArr.get(i).getpNo() == kpNo1.get(j)) {
-					sales1.set(i, ksales1.get(j));
-					break;
+				if (pNo1.get(i) == kpNo1.get(j)) {
+					sales1.set(i, ksales1.get(j)); // 주문한 제품의 번호랑 같은게 있을때 그 sales1의 값을 변경
 				}
 			}
-			//System.out.println(pNo1);
 		}
-
 		int iTemp = 0;
 		double dTemp = 0.0;
-		
-		for (int i = 0; i < sales1.size(); i++) {
-			for (int k = 0; k < pArr.size(); k++) {
-				if (pNo1.get(i) == pArr.get(k).getpNo()) {
-					for (int j = 0; j < i; j++) {
-						if (pArr.get(i).getCount() < pArr.get(j).getCount()) {
+
+		int count1 = -1;
+		int count2 = -1;
+		for (int i = 0; i < pNo1.size(); i++) {// sales1 값
+			for (int j = 0; j < i; j++) {// i,j위치 변경용
+				for (int k = 0; k < pArr.size(); k++) {
+					if (pNo1.get(i) == pArr.get(k).getpNo()) {// pNo1.get(i)가 pNo랑 같을떄
+						count1 = pArr.get(k).getCount();
+					}
+					if (pNo1.get(j) == pArr.get(k).getpNo()) {//pNo1.get(j)가 pNo랑 같을때
+						count2 = pArr.get(k).getCount();
+					}
+					if (count1 != -1 && count2 != -1) {// 두개다 값이 들어간경우 
+						if (count1 < count2) {//대소비교를 통한위치변경
 							iTemp = pNo1.get(i);
 							pNo1.set(i, pNo1.get(j));
 							pNo1.set(j, iTemp);
@@ -429,14 +448,15 @@ public class ManageViewFinal {
 							dTemp = sales1.get(i);
 							sales1.set(i, sales1.get(j));
 							sales1.set(j, dTemp);
+							
+							count1 = -1;
+							count2 = -1;
+							break;
 						}
 					}
-
 				}
 			}
-			//System.out.println(pNo1);
 		}
-
 		HashMap<Integer, Double> copy2 = mc.analysis();
 		Set<Integer> key2 = copy2.keySet();
 		Iterator<Integer> itKey2 = key2.iterator();
@@ -471,16 +491,14 @@ public class ManageViewFinal {
 					iTemp = pNo2.get(i);
 					pNo2.set(i, pNo2.get(j));
 					pNo2.set(j, iTemp);
-					
-					
-					
+
 					dTemp = sales2.get(i);
 					sales2.set(i, sales2.get(j));
 					sales2.set(j, dTemp);
 				}
 			}
 		}
-		
+
 		Object[][] o = new Object[pNo1.size()][3];
 		for (int i = 0; i < o.length; i++) {
 			for (int j = 0; j < o[i].length; j++) {
@@ -517,8 +535,7 @@ public class ManageViewFinal {
 						}
 					});
 				} else {
-					
-					//count도 순서변경 다바뀌고넣기
+
 					Object[][] o2 = new Object[pNo2.size()][3];
 					for (int i = 0; i < o2.length; i++) {
 						for (int j = 0; j < o2[i].length; j++) {
@@ -565,7 +582,7 @@ public class ManageViewFinal {
 		table.setRowSelectionAllowed(true);
 		table.getTableHeader().setReorderingAllowed(false);
 		table.getTableHeader().setResizingAllowed(false);
-		
+
 		JButton lastPage = new JButton("\uC774\uC804 \uD398\uC774\uC9C0");
 		lastPage.setBounds(138, 612, 125, 29);
 		lastPage.setForeground(Color.WHITE);
@@ -604,7 +621,7 @@ public class ManageViewFinal {
 					int x = table.getSelectedRow();
 					a = table.getValueAt(x, 0);
 					String value = String.valueOf(a);
-					b= mc.indexProduct(Integer.parseInt(value));
+					b = mc.indexProduct(Integer.parseInt(value));
 //					for (int i = 0; i < pArr.size(); i++) {
 //						if (pArr.get(i).getpNo() == Integer.parseInt(value)) {
 //							b = i;
@@ -621,10 +638,10 @@ public class ManageViewFinal {
 						MainView.setMainPage(updateProduct(p, b, analyzeSale()));
 
 					}
-				}catch(ArrayIndexOutOfBoundsException e2) {
+				} catch (ArrayIndexOutOfBoundsException e2) {
 					JOptionPane.showMessageDialog(null, "값을 선택해주세요", "Error", JOptionPane.WARNING_MESSAGE);
 				}
-				
+
 			}
 		});
 		delete.addMouseListener(new MouseAdapter() {
@@ -668,33 +685,36 @@ public class ManageViewFinal {
 	}
 
 	public JPanel saleState() {
-
+		pArr.clear();
+		pArr =pDao.fileRead();
+		oArr.clear();
+		oArr= oDao.fileRead();
+		mArr.clear();
+		mArr= mDao.fileRead();
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 		ArrayList<Integer> result = new ArrayList<Integer>();
 		result = mc.salesState(date, 2);
 		for (int i = 0; i < result.size(); i++) {
-			// i+1한 곳에 result.get(i)로 바꿔줘야함
 			dataset.addValue(result.get(i), (date / 100 - i) + "", "판매액");
 		}
-		chart = ChartFactory.createBarChart("판매현황", "월", "판매액", dataset, PlotOrientation.VERTICAL, true, true,
-				true);
+		chart = ChartFactory.createBarChart("판매현황", "월", "판매액", dataset, PlotOrientation.VERTICAL, true, true, true);
 		chart.getTitle().setFont(new Font("굴림", Font.BOLD, 18));
-		
+
 		CategoryPlot plot = chart.getCategoryPlot();
 		plot.setBackgroundPaint(Color.WHITE);
 		plot.setRangeGridlinePaint(Color.white);
-		plot.getDomainAxis().setLabelFont(new Font("굴림",Font.BOLD,13));
-		plot.getDomainAxis().setTickLabelFont(new Font("굴림",Font.BOLD,13));
-		plot.getRangeAxis().setLabelFont(new Font("굴림",Font.BOLD,13));
-		plot.getRangeAxis().setTickLabelFont(new Font("굴림",Font.BOLD,13));
-		
+		plot.getDomainAxis().setLabelFont(new Font("굴림", Font.BOLD, 13));
+		plot.getDomainAxis().setTickLabelFont(new Font("굴림", Font.BOLD, 13));
+		plot.getRangeAxis().setLabelFont(new Font("굴림", Font.BOLD, 13));
+		plot.getRangeAxis().setTickLabelFont(new Font("굴림", Font.BOLD, 13));
+
 		chart.setBackgroundPaint(Color.WHITE);
-		
+
 		JPanel saleState = new JPanel();
 		saleState.setBounds(32, 50, 779, 649);
 		saleState.setLayout(null);
 		saleState.setBackground(Color.WHITE);
-		
+
 		JLabel label = new JLabel("\uD310\uB9E4\uD604\uD669");
 		label.setBounds(324, 29, 100, 21);
 		label.setFont(new Font("굴림", Font.BOLD, 20));
@@ -704,7 +724,6 @@ public class ManageViewFinal {
 		graph.setBounds(0, 106, 779, 461);
 		graph.setBackground(Color.white);
 		saleState.add(graph);
-		
 
 		ChartPanel cp = new ChartPanel(chart);
 		cp.setBackground(Color.WHITE);
@@ -768,7 +787,12 @@ public class ManageViewFinal {
 	}
 
 	public JPanel insertProduct() {
-
+		pArr.clear();
+		pArr =pDao.fileRead();
+		oArr.clear();
+		oArr= oDao.fileRead();
+		mArr.clear();
+		mArr= mDao.fileRead();
 		JPanel insertProduct = new JPanel();
 		insertProduct.setBounds(101, 41, 465, 558);
 		insertProduct.setLayout(null);
@@ -832,23 +856,19 @@ public class ManageViewFinal {
 		explain.setBorder(BorderFactory.createCompoundBorder(lineBorder, emptyBorder));
 
 		insertProduct.add(scrollPane);
-		/*// TextArea 설정 및 추가
-	    // TextArea에 content가 가리키는 문자열을 표시하고 50행, 50열로 설정합니다.      
-	    JTextArea ta = new JTextArea(content, 50, 50);
-	    //행 넘기기 기능 켜기
-	    ta.setLineWrap(true);
-	    //행 넘길 때 행의 마지막 단어가 두행에 걸쳐 나뉘지 않도록 하기
-	    ta.setWrapStyleWord(true);
-	    // TextArea의 테두리선의 색을 검정 두깨를 3px로 설정합니다.
-	    Border lineBorder = BorderFactory.createLineBorder(Color.black, 3);
-	    // 텍스트와 TextArea 경계 사이에 여백을 두기 위해서 emptyBorder를 생성합니다. 
-	    Border emptyBorder = BorderFactory.createEmptyBorder(7, 7, 7, 7);
-	    //TextArea에 lineBorder(검정테두리), emptyBorder(여백)로 구성된 복합 경계선을 설정합니다.
-	    ta.setBorder(BorderFactory.createCompoundBorder(lineBorder, emptyBorder));
-	    // TextArea에 스크롤 기능을 추가한 후 Panel안에 집어 넣습니다.
-	    upperPanel.add(new JScrollPane(ta));*/
-		
-		
+		/*
+		 * // TextArea 설정 및 추가 // TextArea에 content가 가리키는 문자열을 표시하고 50행, 50열로 설정합니다.
+		 * JTextArea ta = new JTextArea(content, 50, 50); //행 넘기기 기능 켜기
+		 * ta.setLineWrap(true); //행 넘길 때 행의 마지막 단어가 두행에 걸쳐 나뉘지 않도록 하기
+		 * ta.setWrapStyleWord(true); // TextArea의 테두리선의 색을 검정 두깨를 3px로 설정합니다. Border
+		 * lineBorder = BorderFactory.createLineBorder(Color.black, 3); // 텍스트와 TextArea
+		 * 경계 사이에 여백을 두기 위해서 emptyBorder를 생성합니다. Border emptyBorder =
+		 * BorderFactory.createEmptyBorder(7, 7, 7, 7); //TextArea에 lineBorder(검정테두리),
+		 * emptyBorder(여백)로 구성된 복합 경계선을 설정합니다.
+		 * ta.setBorder(BorderFactory.createCompoundBorder(lineBorder, emptyBorder)); //
+		 * TextArea에 스크롤 기능을 추가한 후 Panel안에 집어 넣습니다. upperPanel.add(new JScrollPane(ta));
+		 */
+
 		String[] sArr = { "free" };
 		JComboBox<String> size = new JComboBox<String>(sArr);
 
@@ -884,7 +904,7 @@ public class ManageViewFinal {
 		fileChoose.setFont(new Font("Gulim", Font.PLAIN, 15));
 		insertProduct.add(fileChoose);
 
-		JLabel fileName = new JLabel("\uD30C\uC77C\uBA85");
+		JLabel fileName = new JLabel("file name");
 		fileName.setBounds(33, 272, 403, 21);
 		fileChoose.setFont(new Font("Gulim", Font.PLAIN, 15));
 		insertProduct.add(fileName);
@@ -894,7 +914,7 @@ public class ManageViewFinal {
 		fileSave.setForeground(Color.WHITE);
 		fileSave.setBackground(Color.BLACK);
 		fileSave.setFont(new Font("굴림", Font.PLAIN, 15));
-		Icon i=new ImageIcon("fileIcon.png"); 
+		Icon i = new ImageIcon("fileIcon.png");
 		fileSave.setIcon(i);
 		fileSave.setBorderPainted(false);
 		insertProduct.add(fileSave);
@@ -911,7 +931,7 @@ public class ManageViewFinal {
 
 			}
 		});
-		
+
 		jfc.setFileFilter(new FileNameExtensionFilter("png file", "png"));
 		jfc.setFileFilter(new FileNameExtensionFilter("JPEG file", "jpg", "jpeg"));
 
@@ -941,7 +961,7 @@ public class ManageViewFinal {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (productName.getText().equals("") || price.getText().equals("") || stock.getText().equals("")
-						|| fileName.getText().equals("") || explain.getText().equals("")) {
+						|| fileName.getText().equals("") || explain.getText().equals("") || (fileName.getText()).equals("file name")) {
 					JOptionPane.showMessageDialog(null, "값을 모두 입력해주세요", "warning", JOptionPane.WARNING_MESSAGE);
 				} else {
 					try {
@@ -960,43 +980,45 @@ public class ManageViewFinal {
 						if (result == JOptionPane.CLOSED_OPTION) {
 
 						} else if (result == JOptionPane.YES_OPTION) {
-							ShoppingParsing sp = new ShoppingParsing(); 
-							
+							ShoppingParsing sp = new ShoppingParsing();
+
 							int[] getCategory = sp.getCategory();
 							String[] getCategoryEng = sp.getCategoryEng();
-							
+
 							String categoryEng = null;
 							for (int i = 0; i < getCategory.length; i++) {
-								if(getCategory[i] == category1) {
+								if (getCategory[i] == category1) {
 									categoryEng = getCategoryEng[i];
 									break;
 								}
 							}
-							
+
 							File uploadFile = new File(filePath);
-							String uploadFileName = filePath.substring(filePath.lastIndexOf("\\")+1, filePath.length());
-							
-							File saveDir = new File(MainView.PATH + "image\\category\\"+categoryEng+"\\");
-							if(!saveDir.exists()) saveDir.mkdirs();
-							
-							File saveFile = new File(saveDir,uploadFileName);
-							
+							String uploadFileName = filePath.substring(filePath.lastIndexOf("\\") + 1,
+									filePath.length());
+
+							File saveDir = new File(MainView.PATH + "image\\category\\" + categoryEng + "\\");
+							if (!saveDir.exists())
+								saveDir.mkdirs();
+
+							File saveFile = new File(saveDir, uploadFileName);
+
 							BufferedInputStream inBuffer = null;
 							BufferedOutputStream outBuffer = null;
 							try {
 								inBuffer = new BufferedInputStream(new FileInputStream(uploadFile));
 								outBuffer = new BufferedOutputStream(new FileOutputStream(saveFile));
-								
+
 								int readBuffer = 0;
-								while((readBuffer = inBuffer.read()) != -1) {
+								while ((readBuffer = inBuffer.read()) != -1) {
 									outBuffer.write(readBuffer);
 								}
 								inBuffer.close();
 								outBuffer.close();
 							} catch (Exception e2) {
 							}
-							
-							filePath = "image\\category\\"+categoryEng+"\\" + uploadFileName;
+
+							filePath = "image\\category\\" + categoryEng + "\\" + uploadFileName;
 							pArr.add(new Product(pNo1, category1, productName1, price1, size1, explain1, filePath,
 									stock1, 0));
 							pDao.fileSave(pArr);
@@ -1017,12 +1039,18 @@ public class ManageViewFinal {
 	}
 
 	public JPanel updateProduct(Product p, int index, JPanel panel) {
-
+		pArr.clear();
+		pArr =pDao.fileRead();
+		oArr.clear();
+		oArr= oDao.fileRead();
+		mArr.clear();
+		mArr= mDao.fileRead();
+		
 		JPanel updateProduct = new JPanel();
 		updateProduct.setBounds(64, 75, 506, 564);
 		updateProduct.setLayout(null);
 		updateProduct.setBackground(Color.white);
-		
+
 		JLabel lblNewLabel = new JLabel("\uC0C1\uD488\uC218\uC815");
 		lblNewLabel.setBounds(177, 28, 100, 21);
 		lblNewLabel.setFont(new Font("굴림", Font.BOLD, 20));
@@ -1097,15 +1125,16 @@ public class ManageViewFinal {
 		explain.setAlignmentX(Component.LEFT_ALIGNMENT);
 		explain.setBounds(45, 351, 383, 200);
 		explain.setLineWrap(true);
-		
-		
+
+		JScrollPane scrollPane = new JScrollPane(explain);
+		scrollPane.setBounds(33, 334, 350, 200);
+
+		updateProduct.add(scrollPane);
 		Border lineBorder = BorderFactory.createLineBorder(Color.black, 1);
 		Border emptyBorder = BorderFactory.createEmptyBorder(5, 5, 5, 5);
 		explain.setBorder(BorderFactory.createCompoundBorder(lineBorder, emptyBorder));
-		updateProduct.add(explain);
 		explain.setColumns(10);
 
-		
 		JLabel label_5 = new JLabel("\uC0AC\uC9C4 \uCD94\uAC00");
 		label_5.setBounds(35, 265, 78, 21);
 		label_5.setFont(new Font("Gulim", Font.PLAIN, 15));
@@ -1115,7 +1144,7 @@ public class ManageViewFinal {
 		file.setBounds(130, 256, 30, 30);
 		file.setForeground(Color.WHITE);
 		file.setBackground(Color.BLACK);
-		Icon i=new ImageIcon("fileIcon.png"); 
+		Icon i = new ImageIcon("fileIcon.png");
 		file.setIcon(i);
 		file.setBorderPainted(false);
 		updateProduct.add(file);
@@ -1176,7 +1205,7 @@ public class ManageViewFinal {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (productName.getText().equals("") || price.getText().equals("") || stock.getText().equals("")
-						|| fileName.getText().equals("") || explain.getText().equals("")) {
+						|| fileName.getText().equals("") || explain.getText().equals("")|| (fileName.getText()).equals("file name")) {
 					JOptionPane.showMessageDialog(null, "값을 모두 입력해주세요", "warning", JOptionPane.WARNING_MESSAGE);
 				} else {
 					try {
@@ -1221,9 +1250,13 @@ public class ManageViewFinal {
 	}
 
 	public JPanel searchMember() {
-
-		int size = mArr.size();
-
+		pArr.clear();
+		pArr =pDao.fileRead();
+		oArr.clear();
+		oArr= oDao.fileRead();
+		mArr.clear();
+		mArr= mDao.fileRead();
+		
 		JPanel searchMember = new JPanel();
 		searchMember.setBounds(51, 38, 664, 551);
 		searchMember.setLayout(null);
@@ -1252,7 +1285,7 @@ public class ManageViewFinal {
 		table_1.setRowSelectionAllowed(true);
 		table_1.getTableHeader().setReorderingAllowed(false);
 		table_1.getTableHeader().setResizingAllowed(false);
-		
+
 		for (int i = 0; i < mArr.size(); i++) {
 			int no = mArr.get(i).getmNo();
 			String id = mArr.get(i).getId();
@@ -1276,7 +1309,6 @@ public class ManageViewFinal {
 		// table_1.setCellSelectionEnabled(false);
 		table_1.setBorder(UIManager.getBorder("ComboBox.border"));
 
-		
 		JLabel label = new JLabel("\uD68C\uC6D0\uC815\uBCF4");
 		label.setBounds(107, 15, 96, 34);
 		label.setFont(new Font("굴림", Font.BOLD, 20));
@@ -1370,9 +1402,16 @@ public class ManageViewFinal {
 		return searchMember;
 
 	}
-	
-	public JPanel cartView() {
 
+	public JPanel cartView() {
+		pArr.clear();
+		pArr =pDao.fileRead();
+		oArr.clear();
+		oArr= oDao.fileRead();
+		mArr.clear();
+		mArr= mDao.fileRead();
+		
+		
 		JPanel cartView = new JPanel();
 		cartView.setBounds(135, 63, 689, 541);
 		cartView.setLayout(null);
@@ -1386,7 +1425,8 @@ public class ManageViewFinal {
 
 		String[] list = { "주문번호", "주문상품", "주문가격", "배송상태" };
 
-		DefaultTableModel model = new DefaultTableModel(list, 0);
+		DefaultTableModel model;
+		model =new DefaultTableModel(list, 0);
 
 		JTable table = new JTable(model);
 		scrollPane.add(table);
@@ -1407,50 +1447,49 @@ public class ManageViewFinal {
 //		}
 //
 //		size.setSelectedIndex(a);
-		int[] st = { 0, 1, 2 };
 		
-		int sum;
-		int index;
+
+		
 
 		table.getColumnModel().getColumn(0).setPreferredWidth(30);
 		table.getColumnModel().getColumn(1).setPreferredWidth(230);
-		ArrayList<String> a = new ArrayList<>();
-		ArrayList<Integer> b = new ArrayList<>();
-		String stat[] = { "결재완료", "배송시작", "배송종료" };
-		sum = 0;
+		
+		
+		
+		ArrayList<String> a = new ArrayList<>();//주문한 각각의 상품명 + 주문갯수를 저장
+		ArrayList<Integer> b = new ArrayList<>();// 주문한건당 몇개의 상품을 선택한지 정해서 arrayList에 저장
+		int[] st = { 0, 1, 2 };//Order객체의 배송상태를 비교하는 int형 배열
+		String stat[] = { "결재완료", "배송시작", "배송종료" };//배송상태를 볼수있는 String형 배열
+		int sum=0;// 변수 a에서 각각의 주문번호에서 첫번째 값의 위치를 받아올 변수
+		int index;//주문번호의 제품의 배송상태를 나타냄
 		for (int i = 0; i < oArr.size(); i++) {
-			
-			index = 0;
+			index = 0;//초기값 0
 			for (int j = 0; j < st.length; j++) {
 				if (st[j] == oArr.get(i).getState()) {
-					index = j;
+					index = j;// 배송상태가 몇번째인지 저장
 				}
 			}
-			b.add(oArr.get(i).getpNo().size());
-			for (int j = 0; j < oArr.get(i).getpNo().size(); j++) {
-				for (int k = 0; k < pArr.size(); k++) {
+			b.add(oArr.get(i).getAmount().size());
+			for (int j = 0; j < oArr.get(i).getpNo().size(); j++) {//i번째 OrderList가  상품을 구매한 횟수만큼 반복
+				for (int k = 0; k < pArr.size(); k++) {//상품 크기만큼 반복하여 orderList의 상품번호와 일치하는 상품의 상품명을 받아옴
 					if (oArr.get(i).getpNo().get(j) == pArr.get(k).getpNo()) {
-
 						a.add(pArr.get(k).getProductName() + " : " + (oArr.get(i).getAmount().get(j)) + "개");
 						break;
 					}
 				}
-
 			}
-			int oNo = oArr.get(i).getOrderNo();
-
-			int price = oArr.get(i).getPayment();
-
-			
+			int oNo = oArr.get(i).getOrderNo(); // i번째 orderlist 의 주문번호
+			int price = oArr.get(i).getPayment();// i번 째 orderlist의 주문가격
 			JComboBox<String> state = new JComboBox<>(stat);
 			Object[] cart = { oNo, a.get(sum) + " 외 " + (oArr.get(i).getpNo().size() - 1) + "품목", price, stat[index] };
-
 			model.addRow(cart);
-			sum += b.get(i);
+			sum += b.get(i);//다음 번호의 orderlist의 첫번째 값을 받기위해 b만큼 값증가
 			column1.setCellEditor(new DefaultCellEditor(state));
 		}
-		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		
+		
+		
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 		JLabel lblNewLabel = new JLabel("\uBC30\uC1A1\uC0C1\uD0DC");
 		lblNewLabel.setBounds(64, 29, 100, 21);
@@ -1476,9 +1515,9 @@ public class ManageViewFinal {
 		update.setBackground(Color.BLACK);
 		update.setFont(new Font("굴림", Font.PLAIN, 15));
 		cartView.add(update);
-		
+
 		cartView.setVisible(true);
-		
+
 		lastPage.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -1489,7 +1528,7 @@ public class ManageViewFinal {
 		search.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				
+
 				try {
 					String message = mc.orderInfo(oArr.get(table.getSelectedRow()));
 //					String message = "";
@@ -1516,10 +1555,9 @@ public class ManageViewFinal {
 //					}
 
 					JOptionPane.showMessageDialog(null, message);
-				}catch(ArrayIndexOutOfBoundsException e2) {
+				} catch (ArrayIndexOutOfBoundsException e2) {
 					JOptionPane.showMessageDialog(null, "값을 선택해주세요", "Error", JOptionPane.WARNING_MESSAGE);
 				}
-				
 
 			}
 		});

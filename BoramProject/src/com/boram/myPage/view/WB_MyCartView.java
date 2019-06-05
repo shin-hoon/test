@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import javax.swing.*;
+import javax.swing.plaf.OptionPaneUI;
 import javax.swing.table.*;
 
 import com.boram.manager.vo.Product;
@@ -173,6 +174,22 @@ public class WB_MyCartView {
 		btnNewButton_1.setFont(new Font("굴림", Font.PLAIN, 15));
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+				for(int i =0;i<CList.size();i++) {
+					int temp1=CList.get(i).getpNo();
+					int amount = cb1.getSelectedIndex()+1;
+					
+					
+					if(ca.reduceStock(temp1, amount)== -1) {
+						JOptionPane.showMessageDialog(null, "재고가 부족합니다");
+					}
+				}
+				
+				for(Product i:CList) {
+					i.setPrice(i.getPrice()*(cb1.getSelectedIndex()+1));
+					System.out.println("price : "+i.getPrice());
+					System.out.println(cb1.getSelectedIndex()+1);
+				}
 				ca.cartOrder(cb1.getSelectedIndex()+1);
 				JOptionPane.showMessageDialog(null, "주문되었습니다.","Order Complete!",JOptionPane.DEFAULT_OPTION);
 				MainView.setMainPage(new WB_MyDeliveryView().getMyDeliveryView());
