@@ -174,6 +174,7 @@ public class ManagerController2 {
 		mArr = md.fileRead();
 		
 		pArr.remove(result);
+		pd.fileSave(pArr);
 	}
 
 //	public void deleteMember(int result) {

@@ -66,7 +66,6 @@ import com.boram.shopping.view.MainView;
 
 public class ManageViewFinal {
 	private ProductDao pDao = new ProductDao();
-	private List<Product> pArr = pDao.fileRead();
 	private OrderDao oDao = new OrderDao();
 	private ArrayList<Order> oArr = oDao.fileRead();
 	private ManagerController2 mc = new ManagerController2();
@@ -77,11 +76,12 @@ public class ManageViewFinal {
 	private ArrayList<Category> cArr = cDao.fileRead();
 	private MemberDao mDao = new MemberDao();
 	private ArrayList<Member> mArr = mDao.fileRead();
+	private List<Product> pArr = mc.searchProduct();
 	private JFreeChart chart;
 
 	public JPanel manageMain() {
 		pArr.clear();
-		pArr =pDao.fileRead();
+		pArr =mc.searchProduct();
 		oArr.clear();
 		oArr= oDao.fileRead();
 		mArr.clear();
@@ -188,7 +188,7 @@ public class ManageViewFinal {
 
 	public JPanel manageProduct() {
 		pArr.clear();
-		pArr =pDao.fileRead();
+		pArr =mc.searchProduct();
 		oArr.clear();
 		oArr= oDao.fileRead();
 		mArr.clear();
@@ -373,7 +373,7 @@ public class ManageViewFinal {
 
 	public JPanel analyzeSale() {
 		pArr.clear();
-		pArr =pDao.fileRead();
+		pArr =mc.searchProduct();
 		oArr.clear();
 		oArr= oDao.fileRead();
 		mArr.clear();
@@ -670,9 +670,9 @@ public class ManageViewFinal {
 					if (result == JOptionPane.CLOSED_OPTION) {
 
 					} else if (result == JOptionPane.YES_OPTION) {
-						mc.deleteProduct(temp);
+						pArr.remove(temp);
 						pDao.fileSave(pArr);
-						MainView.setMainPage(manageProduct());
+						MainView.setMainPage(analyzeSale());
 					} else {
 
 					}
@@ -686,7 +686,7 @@ public class ManageViewFinal {
 
 	public JPanel saleState() {
 		pArr.clear();
-		pArr =pDao.fileRead();
+		pArr =mc.searchProduct();
 		oArr.clear();
 		oArr= oDao.fileRead();
 		mArr.clear();
@@ -788,7 +788,7 @@ public class ManageViewFinal {
 
 	public JPanel insertProduct() {
 		pArr.clear();
-		pArr =pDao.fileRead();
+		pArr =mc.searchProduct();
 		oArr.clear();
 		oArr= oDao.fileRead();
 		mArr.clear();
@@ -1040,7 +1040,7 @@ public class ManageViewFinal {
 
 	public JPanel updateProduct(Product p, int index, JPanel panel) {
 		pArr.clear();
-		pArr =pDao.fileRead();
+		pArr =mc.searchProduct();
 		oArr.clear();
 		oArr= oDao.fileRead();
 		mArr.clear();
@@ -1251,7 +1251,7 @@ public class ManageViewFinal {
 
 	public JPanel searchMember() {
 		pArr.clear();
-		pArr =pDao.fileRead();
+		pArr =mc.searchProduct();
 		oArr.clear();
 		oArr= oDao.fileRead();
 		mArr.clear();
@@ -1405,7 +1405,7 @@ public class ManageViewFinal {
 
 	public JPanel cartView() {
 		pArr.clear();
-		pArr =pDao.fileRead();
+		pArr =mc.searchProduct();
 		oArr.clear();
 		oArr= oDao.fileRead();
 		mArr.clear();
